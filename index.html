@@ -1146,10 +1146,8 @@
         }
     }
 
+    // Initialize without showing any toast messages
     onAuthStateChanged(auth, (user) => {
-        if (!user) {
-            showToast('Not logged in – demo mode', true);
-        }
         init();
     });
 
