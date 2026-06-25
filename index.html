@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ECE THIRD YEARS </title>
+    <!-- Bootstrap 5 + FontAwesome 6 + Leaflet -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family:'Inter',sans-serif;
+            background: #eef2f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin:0;
+        }
+        .lookup-window {
+            background: #fff;
+            border-radius: 32px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.04);
+            padding: 2rem 2rem 2.2rem;
+            width: 100%;
+            max-width: 650px;
+            margin: 1.5rem;
+            transition: all 0.2s;
+        }
+        .lookup-window .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.8rem;
+        }
+        .lookup-window .brand .icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg,#0066FF,#0052CC);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.3rem;
+        }
+        .lookup-window .brand h5 {
+            font-weight: 700;
+            margin:0;
+            color:#0f172a;
+            letter-spacing:-0.2px;
+        }
+        .lookup-window .brand small {
+            color:#475569;
+            font-weight:400;
+            font-size:0.8rem;
+        }
+        .input-group-custom {
+            border-radius: 60px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            transition: border 0.2s;
+        }
+        .input-group-custom:focus-within {
+            border-color: #0066FF;
+            box-shadow: 0 0 0 3px rgba(0,102,255,0.12);
+        }
+        .input-group-custom input {
+            border: none;
+            padding: 0.75rem 1.4rem;
+            font-size: 0.95rem;
+            background: transparent;
+            outline: none;
+            flex:1;
+        }
+        .input-group-custom input::placeholder { color:#94a3b8; }
+        .input-group-custom button {
+            background: linear-gradient(135deg,#0066FF,#0052CC);
+            border: none;
+            padding: 0 1.6rem;
+            color: #fff;
+            font-weight: 600;
+            font-size:0.9rem;
+            transition: background 0.2s;
+        }
+        .input-group-custom button:hover { background:#0047b3; }
+        .input-group-custom button:disabled { opacity:0.6; }
+
+        .suggestions-box {
+            position: relative;
+            margin-top: 6px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 28px rgba(0,0,0,0.10);
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 6px 0;
+            display: none;
+            z-index: 100;
+            border: 1px solid #eef2f6;
+        }
+        .suggestions-box .suggestion-item {
+            padding: 10px 18px;
+            cursor: pointer;
+            transition: background 0.15s;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .suggestions-box .suggestion-item:last-child { border-bottom: none; }
+        .suggestions-box .suggestion-item:hover {
+            background: #f0f7ff;
+        }
+        .suggestions-box .suggestion-item .reg {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color:#0f172a;
+        }
+        .suggestions-box .suggestion-item .name {
+            font-size: 0.8rem;
+            color:#475569;
+        }
+        .suggestions-box .suggestion-item .badge-loc {
+            font-size: 0.6rem;
+            background: #D1FAE5;
+            color: #059669;
+            padding: 2px 10px;
+            border-radius: 40px;
+            font-weight: 600;
+        }
+
+        .result-card {
+            margin-top: 1.6rem;
+            background: #fafcff;
+            border-radius: 20px;
+            padding: 1.2rem 1.4rem;
+            border-left: 5px solid #0066FF;
+            display: none;
+        }
+        .result-card .row-detail {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.2rem 0.8rem;
+            font-size: 0.9rem;
+            padding: 3px 0;
+        }
+        .result-card .row-detail .label {
+            font-weight: 600;
+            color: #1e293b;
+            min-width: 100px;
+        }
+        .result-card .row-detail .value {
+            color: #0f172a;
+            font-weight: 500;
+        }
+        .result-card .place {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-top: 4px;
+            word-wrap: break-word;
+        }
+        .result-card .place .updated-by {
+            font-weight: 400;
+            font-size: 0.75rem;
+            color: #6B7280;
+            margin-left: 8px;
+        }
+        .result-card .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .result-card .actions .btn-sm-custom {
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: none;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        .btn-osm { background:#0066FF; color:#fff; }
+        .btn-osm:hover { background:#004bb5; color:#fff; }
+        .btn-dir { background:#10B981; color:#fff; }
+        .btn-dir:hover { background:#059669; color:#fff; }
+        .btn-dir.active { background:#EF4444; }
+        .btn-dir.active:hover { background:#DC2626; }
+        .btn-phone { background:#0f172a; color:#fff; }
+        .btn-phone:hover { background:#1e293b; color:#fff; }
+        .btn-clear-route { background:#6B7280; color:#fff; }
+        .btn-clear-route:hover { background:#4B5563; color:#fff; }
+
+        .nearby-tiny {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+        }
+        .nearby-tiny .nearby-item {
+            display: inline-block;
+            background: #f1f5f9;
+            padding: 3px 12px;
+            border-radius: 40px;
+            margin: 3px 4px 3px 0;
+            cursor: pointer;
+            transition: 0.15s;
+            border: 1px solid transparent;
+            font-size:0.75rem;
+        }
+        .nearby-tiny .nearby-item:hover {
+            background: #e0edff;
+            border-color: #b3d4ff;
+        }
+        .nearby-tiny .nearby-item .dist {
+            color:#475569;
+            margin-left:4px;
+        }
+
+        /* Map container */
+        .map-container {
+            width: 100%;
+            height: 280px;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-top: 12px;
+            border: 1px solid #e9edf2;
+            background: #eef2f6;
+            position: relative;
+        }
+        .map-container .map-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .map-container .map-placeholder i {
+            font-size: 2rem;
+            color: #cbd5e1;
+        }
+        .map-container #studentMap {
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+
+        /* Route info panel */
+        .route-info {
+            display: none;
+            margin-top: 10px;
+            padding: 10px 14px;
+            background: #f0fdf4;
+            border-radius: 12px;
+            border-left: 4px solid #10B981;
+            font-size: 0.85rem;
+        }
+        .route-info .route-details {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .route-info .route-details span {
+            font-weight: 600;
+        }
+        .route-info .route-details .distance {
+            color: #059669;
+        }
+        .route-info .route-details .time {
+            color: #0066FF;
+        }
+
+        .not-found {
+            margin-top: 1.2rem;
+            text-align: center;
+            color: #94a3b8;
+            font-size:0.9rem;
+            display: none;
+        }
+        .spinner-small {
+            display:inline-block;
+            width:16px;
+            height:16px;
+            border:2px solid #e2e8f0;
+            border-top:2px solid #0066FF;
+            border-radius:50%;
+            animation:spin .7s linear infinite;
+            margin-right:6px;
+        }
+        @keyframes spin { to { transform:rotate(360deg); } }
+
+        .toast-custom {
+            position:fixed;
+            bottom:20px;
+            right:20px;
+            background:#fff;
+            padding:12px 22px;
+            border-radius:16px;
+            box-shadow:0 8px 28px rgba(0,0,0,0.10);
+            border-left:5px solid #10B981;
+            display:flex;
+            align-items:center;
+            gap:10px;
+            z-index:999;
+            font-size:0.9rem;
+            animation:slideUp .25s ease;
+        }
+        .toast-error { border-left-color:#EF4444; }
+        @keyframes slideUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+        .suggestions-box::-webkit-scrollbar { width:4px; }
+        .suggestions-box::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:10px; }
+        .suggestions-box::-webkit-scrollbar-track { background:transparent; }
+
+        .designer-credit {
+            margin-top: 1.8rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e9edf2;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+        .designer-credit a {
+            color: #0066FF;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .designer-credit a:hover {
+            text-decoration: underline;
+        }
+        .designer-credit .heart {
+            color: #EF4444;
+        }
+
+        /* Leaflet routing machine custom styles */
+        .leaflet-routing-container {
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .leaflet-routing-container .leaflet-routing-alt {
+            max-height: 130px;
+            overflow-y: auto;
+        }
+
+        @media (max-width:480px) {
+            .lookup-window { padding:1.5rem; }
+            .result-card .row-detail .label { min-width:80px; }
+            .map-container { height: 200px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="lookup-window">
+    <!-- brand -->
+    <div class="brand">
+        <div class="icon"><i class="fas fa-user-graduate"></i></div>
+        <div>
+            <h5>ECE THIRD YEARS Student Lookup</h5>
+            <small>For Attached Companies · MMUST</small>
+        </div>
+    </div>
+
+    <!-- search with dropdown -->
+    <div style="position:relative;">
+        <div class="input-group input-group-custom">
+            <input type="text" id="admissionInput" placeholder="Type admission number …" autocomplete="off" />
+            <button id="lookupBtn"><i class="fas fa-search me-1"></i> Find</button>
+        </div>
+        <div class="suggestions-box" id="suggestionsBox"></div>
+    </div>
+
+    <!-- result card -->
+    <div class="result-card" id="resultCard">
+        <div class="row-detail"><span class="label">Reg No</span><span class="value" id="sReg">—</span></div>
+        <div class="row-detail"><span class="label">Full Name</span><span class="value" id="sName">—</span></div>
+        <div class="row-detail"><span class="label">Company</span><span class="value" id="sCompany">—</span></div>
+        <div class="row-detail"><span class="label">County</span><span class="value" id="sCounty">—</span></div>
+        <div class="row-detail"><span class="label">Phone</span><span class="value" id="sPhone">—</span></div>
+        <div class="place" id="sExactPlace">📍 Location not shared</div>
+        <div class="actions">
+            <button class="btn-sm-custom btn-osm" id="osmBtn"><i class="fas fa-map-marked-alt me-1"></i>OpenStreetMap</button>
+            <button class="btn-sm-custom btn-dir" id="dirBtn"><i class="fas fa-route me-1"></i>Directions</button>
+            <button class="btn-sm-custom btn-phone" id="phoneBtn"><i class="fas fa-phone-alt me-1"></i>Call</button>
+        </div>
+        <!-- Map -->
+        <div class="map-container" id="mapContainer">
+            <div class="map-placeholder" id="mapPlaceholder">
+                <i class="fas fa-map-marked-alt"></i>
+                <span>Search a student to see location</span>
+            </div>
+            <div id="studentMap"></div>
+        </div>
+        <!-- Route Info -->
+        <div class="route-info" id="routeInfo">
+            <div class="route-details">
+                <span>📍 Route from your location</span>
+                <span class="distance" id="routeDistance">—</span>
+                <span class="time" id="routeTime">—</span>
+            </div>
+            <div style="margin-top:6px; display:flex; gap:8px; flex-wrap:wrap;">
+                <button class="btn-sm-custom btn-clear-route" id="clearRouteBtn" style="font-size:0.7rem; padding:2px 12px;">
+                    <i class="fas fa-times me-1"></i>Clear Route
+                </button>
+            </div>
+        </div>
+        <!-- nearby -->
+        <div class="nearby-tiny" id="nearbyContainer">
+            <span class="text-muted" style="font-size:0.7rem;">Nearby students appear here</span>
+        </div>
+    </div>
+
+    <!-- not found -->
+    <div class="not-found" id="notFound">
+        <i class="fas fa-user-slash me-2" style="color:#cbd5e1;"></i> No student matches that number.
+    </div>
+
+    <!-- Designer Credit -->
+    <div class="designer-credit">
+        <span>Designed with <span class="heart">❤</span> by </span>
+        <a href="tel:0719736872">Bittok</a>
+        <span> · </span>
+        <a href="tel:0719736872"><i class="fas fa-phone-alt me-1"></i>0719736872</a>
+    </div>
+</div>
+
+<!-- toast container -->
+<div id="toastContainer"></div>
+
+<script type="module">
+    // ----- Firebase imports -----
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBIhVRMbrCV5y8Pz08LanmYkd0Gt_C34g0",
+        authDomain: "ece-2a58b.firebaseapp.com",
+        projectId: "ece-2a58b",
+        storageBucket: "ece-2a58b.firebasestorage.app",
+        messagingSenderId: "289360090496",
+        appId: "1:289360090496:web:23cba6a1a6054f8bb59d65"
+    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // ----- DOM refs -----
+    const input = document.getElementById('admissionInput');
+    const lookupBtn = document.getElementById('lookupBtn');
+    const suggestionsBox = document.getElementById('suggestionsBox');
+    const resultCard = document.getElementById('resultCard');
+    const notFound = document.getElementById('notFound');
+
+    const sReg = document.getElementById('sReg');
+    const sName = document.getElementById('sName');
+    const sCompany = document.getElementById('sCompany');
+    const sCounty = document.getElementById('sCounty');
+    const sPhone = document.getElementById('sPhone');
+    const sExactPlace = document.getElementById('sExactPlace');
+    const osmBtn = document.getElementById('osmBtn');
+    const dirBtn = document.getElementById('dirBtn');
+    const phoneBtn = document.getElementById('phoneBtn');
+    const clearRouteBtn = document.getElementById('clearRouteBtn');
+    const mapContainer = document.getElementById('mapContainer');
+    const mapPlaceholder = document.getElementById('mapPlaceholder');
+    const studentMapDiv = document.getElementById('studentMap');
+    const nearbyContainer = document.getElementById('nearbyContainer');
+    const routeInfo = document.getElementById('routeInfo');
+    const routeDistance = document.getElementById('routeDistance');
+    const routeTime = document.getElementById('routeTime');
+
+    let allStudents = [];
+    let currentStudent = null;
+    let mapInstance = null;
+    let mapMarker = null;
+    let nearbyMarkers = [];
+    let routingControl = null;
+    let isShowingRoute = false;
+    let userLocation = null;
+
+    // ----- helpers -----
+    function showToast(msg, isError=false) {
+        const container = document.getElementById('toastContainer');
+        const div = document.createElement('div');
+        div.className = `toast-custom ${isError ? 'toast-error' : ''}`;
+        div.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-circle' : 'fa-check-circle'}" style="color:${isError ? '#EF4444' : '#10B981'};"></i> ${msg}`;
+        container.appendChild(div);
+        setTimeout(() => { if(div.parentNode) div.remove(); }, 3500);
+    }
+
+    function haversine(lat1, lon1, lat2, lon2) {
+        const R=6371;
+        const dLat=(lat2-lat1)*Math.PI/180;
+        const dLon=(lon2-lon1)*Math.PI/180;
+        const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+        return R*2*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    }
+
+    // ----- Initialize map -----
+    function initMap(lat, lng, studentName) {
+        // Remove old map if exists
+        if (mapInstance) {
+            // Remove routing control if exists
+            if (routingControl) {
+                mapInstance.removeControl(routingControl);
+                routingControl = null;
+            }
+            mapInstance.remove();
+            mapInstance = null;
+            mapMarker = null;
+            nearbyMarkers = [];
+            isShowingRoute = false;
+            dirBtn.classList.remove('active');
+            dirBtn.innerHTML = '<i class="fas fa-route me-1"></i>Directions';
+            routeInfo.style.display = 'none';
+        }
+
+        const hasLocation = lat && lng;
+        const center = hasLocation ? [lat, lng] : [0.286, 34.752];
+        const zoom = hasLocation ? 15 : 12;
+
+        // Show map div, hide placeholder
+        studentMapDiv.style.display = 'block';
+        mapPlaceholder.style.display = 'none';
+
+        // Create new map
+        mapInstance = L.map(studentMapDiv).setView(center, zoom);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19
+        }).addTo(mapInstance);
+
+        if (hasLocation) {
+            // Custom marker with student initial
+            const initials = studentName ? studentName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'S';
+            const icon = L.divIcon({
+                html: `<div style="background:#0066FF;width:32px;height:32px;border-radius:50%;border:3px solid white;box-shadow:0 2px 12px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:white;">${initials}</div>`,
+                iconSize: [32, 32],
+                popupAnchor: [0, -16],
+                className: 'student-marker'
+            });
+            
+            mapMarker = L.marker([lat, lng], { icon })
+                .addTo(mapInstance)
+                .bindPopup(`<b>${studentName || 'Student'}</b><br>📍 ${currentStudent?.location?.address || ''}`)
+                .openPopup();
+
+            // Add a small circle to show radius
+            L.circle([lat, lng], {
+                radius: 100,
+                color: '#0066FF',
+                fillColor: '#0066FF',
+                fillOpacity: 0.06,
+                weight: 1,
+                opacity: 0.3
+            }).addTo(mapInstance);
+
+            // If we have user location and route is active, show route
+            if (isShowingRoute && userLocation) {
+                showRoute(userLocation.lat, userLocation.lng, lat, lng);
+            }
+
+        } else {
+            // Show MMUST campus as default
+            const campusIcon = L.divIcon({
+                html: `<div style="background:#10B981;width:20px;height:20px;border-radius:50%;border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;font-size:10px;">🏫</div>`,
+                iconSize: [20, 20]
+            });
+            L.marker([0.286, 34.752], { icon: campusIcon })
+                .addTo(mapInstance)
+                .bindPopup('MMUST Main Campus');
+        }
+
+        // Force map to render properly
+        setTimeout(() => {
+            if (mapInstance) mapInstance.invalidateSize();
+        }, 300);
+    }
+
+    // ----- Show route on map -----
+    function showRoute(fromLat, fromLng, toLat, toLng) {
+        if (!mapInstance) return;
+        
+        // Remove existing routing control
+        if (routingControl) {
+            mapInstance.removeControl(routingControl);
+            routingControl = null;
+        }
+
+        // Create waypoints
+        const waypoints = [
+            L.latLng(fromLat, fromLng),
+            L.latLng(toLat, toLng)
+        ];
+
+        // Add routing control
+        routingControl = L.Routing.control({
+            waypoints: waypoints,
+            routeWhileDragging: true,
+            showAlternatives: false,
+            createMarker: function() { return null; }, // Don't create default markers
+            lineOptions: {
+                styles: [{ color: '#0066FF', weight: 4, opacity: 0.8 }]
+            },
+            altLineOptions: {
+                styles: [{ color: '#10B981', weight: 3, opacity: 0.5 }]
+            }
+        }).addTo(mapInstance);
+
+        // Update route info when route is found
+        routingControl.on('routesfound', function(e) {
+            const routes = e.routes;
+            if (routes && routes.length > 0) {
+                const route = routes[0];
+                const distance = route.summary.totalDistance / 1000; // km
+                const time = route.summary.totalTime / 60; // minutes
+                
+                routeDistance.textContent = `📏 ${distance.toFixed(1)} km`;
+                routeTime.textContent = `⏱️ ${Math.round(time)} min`;
+                routeInfo.style.display = 'block';
+            }
+        });
+
+        isShowingRoute = true;
+        dirBtn.classList.add('active');
+        dirBtn.innerHTML = '<i class="fas fa-route me-1"></i>Hide Route';
+    }
+
+    // ----- Clear route -----
+    function clearRoute() {
+        if (routingControl) {
+            mapInstance.removeControl(routingControl);
+            routingControl = null;
+        }
+        isShowingRoute = false;
+        dirBtn.classList.remove('active');
+        dirBtn.innerHTML = '<i class="fas fa-route me-1"></i>Directions';
+        routeInfo.style.display = 'none';
+    }
+
+    // ----- Update map with student location -----
+    function updateMap(student) {
+        const hasLoc = student.location && student.location.lat && student.location.lng;
+        if (hasLoc) {
+            initMap(student.location.lat, student.location.lng, student.fullName);
+            // Add nearby markers
+            addNearbyMarkers(student);
+        } else {
+            initMap(null, null, null);
+        }
+    }
+
+    // ----- Add nearby student markers -----
+    function addNearbyMarkers(student) {
+        if (!mapInstance) return;
+        
+        // Clear existing nearby markers
+        nearbyMarkers.forEach(m => m.remove());
+        nearbyMarkers = [];
+
+        const withLoc = allStudents.filter(s => {
+            const loc = s.companyLocation || s.currentLocation;
+            return loc && loc.lat && loc.lng && s.id !== student.id;
+        });
+
+        const nearby = withLoc.map(s => {
+            const loc = s.companyLocation || s.currentLocation;
+            const dist = haversine(student.location.lat, student.location.lng, loc.lat, loc.lng);
+            return { ...s, dist, loc };
+        }).filter(s => s.dist <= 5).sort((a,b) => a.dist - b.dist).slice(0, 8);
+
+        const nearbyIcon = L.divIcon({
+            html: `<div style="background:#10B981;width:12px;height:12px;border-radius:50%;border:2px solid white;box-shadow:0 1px 6px rgba(0,0,0,0.15);"></div>`,
+            iconSize: [12, 12],
+            className: 'nearby-marker'
+        });
+
+        nearby.forEach(s => {
+            const m = L.marker([s.loc.lat, s.loc.lng], { icon: nearbyIcon })
+                .addTo(mapInstance)
+                .bindPopup(`${s.fullName}<br>${s.registrationNumber}<br>📍 ${s.loc.address || ''}<br>📏 ${s.dist.toFixed(1)}km away`);
+            nearbyMarkers.push(m);
+        });
+    }
+
+    // ----- load all students -----
+    async function loadAllStudents() {
+        const snap = await getDocs(collection(db, 'students'));
+        allStudents = [];
+        snap.forEach(doc => allStudents.push({ id: doc.id, ...doc.data() }));
+        allStudents.sort((a,b) => (a.registrationNumber || '').localeCompare(b.registrationNumber || ''));
+    }
+
+    // ----- suggestions -----
+    function getSuggestions(query) {
+        if (!query || query.length < 1) return [];
+        const q = query.toLowerCase().trim();
+        return allStudents.filter(s => {
+            const reg = (s.registrationNumber || '').toLowerCase();
+            return reg.includes(q);
+        }).slice(0, 12);
+    }
+
+    function renderSuggestions(query) {
+        const list = getSuggestions(query);
+        suggestionsBox.innerHTML = '';
+        if (list.length === 0) {
+            suggestionsBox.style.display = 'none';
+            return;
+        }
+        suggestionsBox.style.display = 'block';
+        list.forEach(s => {
+            const div = document.createElement('div');
+            div.className = 'suggestion-item';
+            const hasLoc = s.companyLocation && s.companyLocation.lat;
+            div.innerHTML = `
+                <div>
+                    <span class="reg">${s.registrationNumber || 'N/A'}</span>
+                    <span class="name ms-2">${s.fullName || ''}</span>
+                </div>
+                ${hasLoc ? '<span class="badge-loc"><i class="fas fa-check-circle me-1"></i>loc</span>' : ''}
+            `;
+            div.addEventListener('click', () => {
+                input.value = s.registrationNumber || '';
+                suggestionsBox.style.display = 'none';
+                lookupStudent(s.registrationNumber || '');
+            });
+            suggestionsBox.appendChild(div);
+        });
+    }
+
+    // ----- lookup by reg number -----
+    async function lookupStudent(regNumber) {
+        if (!regNumber.trim()) { showToast('Please enter an admission number.', true); return; }
+        lookupBtn.disabled = true;
+        lookupBtn.innerHTML = '<span class="spinner-small"></span>';
+
+        try {
+            const found = allStudents.find(s => 
+                s.registrationNumber && s.registrationNumber.toLowerCase() === regNumber.trim().toLowerCase()
+            );
+            if (!found) {
+                resultCard.style.display = 'none';
+                notFound.style.display = 'block';
+                showToast('No student matches that number.', true);
+                lookupBtn.disabled = false;
+                lookupBtn.innerHTML = '<i class="fas fa-search me-1"></i> Find';
+                return;
+            }
+            notFound.style.display = 'none';
+            resultCard.style.display = 'block';
+
+            // populate
+            sReg.textContent = found.registrationNumber || '—';
+            sName.textContent = found.fullName || '—';
+            sCompany.textContent = found.company || 'Not set';
+            sCounty.textContent = found.county || 'Not set';
+            sPhone.textContent = found.phone || 'N/A';
+
+            // Display the EXACT address saved in the database
+            const loc = found.companyLocation || found.currentLocation || null;
+            const hasLoc = loc && loc.lat && loc.lng;
+            
+            if (hasLoc) {
+                const addressText = loc.address || `${loc.lat}, ${loc.lng}`;
+                const updatedBy = loc.updatedBy === 'admin' ? '👑 Admin' : '👤 Student';
+                const updatedAt = loc.updatedAt ? new Date(loc.updatedAt).toLocaleDateString() : '';
+                
+                sExactPlace.innerHTML = `
+                    📍 ${addressText}
+                    <span class="updated-by">(${updatedBy}${updatedAt ? ' · ' + updatedAt : ''})</span>
+                `;
+                sExactPlace.style.color = '#1e3a8a';
+            } else {
+                sExactPlace.textContent = '📍 Location not shared';
+                sExactPlace.style.color = '#94a3b8';
+            }
+
+            currentStudent = {
+                ...found,
+                location: hasLoc ? { lat: loc.lat, lng: loc.lng, address: loc.address || '' } : null
+            };
+
+            // Reset route state
+            isShowingRoute = false;
+            dirBtn.classList.remove('active');
+            dirBtn.innerHTML = '<i class="fas fa-route me-1"></i>Directions';
+            routeInfo.style.display = 'none';
+
+            // Update map
+            updateMap(currentStudent);
+
+            // nearby list
+            renderNearbyList(currentStudent);
+
+            // buttons
+            osmBtn.onclick = () => {
+                if (currentStudent.location) {
+                    window.open(`https://www.openstreetmap.org/?mlat=${currentStudent.location.lat}&mlon=${currentStudent.location.lng}&zoom=16`,'_blank');
+                } else { showToast('No location data.', true); }
+            };
+            
+            dirBtn.onclick = () => {
+                if (!currentStudent.location) { 
+                    showToast('No location for directions.', true); 
+                    return; 
+                }
+                
+                // If route is already showing, clear it
+                if (isShowingRoute) {
+                    clearRoute();
+                    return;
+                }
+                
+                // Get user location and show route
+                if (!navigator.geolocation) { 
+                    showToast('Geolocation not supported.', true); 
+                    return; 
+                }
+                
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                        userLocation = {
+                            lat: pos.coords.latitude,
+                            lng: pos.coords.longitude
+                        };
+                        showRoute(
+                            userLocation.lat, 
+                            userLocation.lng, 
+                            currentStudent.location.lat, 
+                            currentStudent.location.lng
+                        );
+                    },
+                    () => showToast('Enable location for directions.', true)
+                );
+            };
+
+            // Clear route button
+            clearRouteBtn.onclick = clearRoute;
+
+            phoneBtn.onclick = () => {
+                const phone = currentStudent.phone;
+                if (phone && phone.length >= 10) {
+                    window.location.href = `tel:${phone}`;
+                } else { showToast('No valid phone number.', true); }
+            };
+
+        } catch (e) {
+            showToast('Error: ' + e.message, true);
+        } finally {
+            lookupBtn.disabled = false;
+            lookupBtn.innerHTML = '<i class="fas fa-search me-1"></i> Find';
+        }
+    }
+
+    // ----- nearby list -----
+    function renderNearbyList(student) {
+        nearbyContainer.innerHTML = '';
+        if (!student.location || !student.location.lat) {
+            nearbyContainer.innerHTML = '<span class="text-muted" style="font-size:0.7rem;">No location to find nearby.</span>';
+            return;
+        }
+        const withLoc = allStudents.filter(s => {
+            const loc = s.companyLocation || s.currentLocation;
+            return loc && loc.lat && loc.lng && s.id !== student.id;
+        });
+        const nearby = withLoc.map(s => {
+            const loc = s.companyLocation || s.currentLocation;
+            const dist = haversine(student.location.lat, student.location.lng, loc.lat, loc.lng);
+            return { ...s, dist, loc };
+        }).filter(s => s.dist <= 5).sort((a,b) => a.dist - b.dist).slice(0, 10);
+
+        if (nearby.length === 0) {
+            nearbyContainer.innerHTML = '<span class="text-muted" style="font-size:0.7rem;">No nearby students within 5 km.</span>';
+            return;
+        }
+
+        nearby.forEach(s => {
+            const span = document.createElement('span');
+            span.className = 'nearby-item';
+            span.innerHTML = `${s.fullName || 'Unknown'} <span class="dist">${s.dist.toFixed(1)}km</span>`;
+            span.addEventListener('click', () => {
+                if (s.registrationNumber) {
+                    input.value = s.registrationNumber;
+                    lookupStudent(s.registrationNumber);
+                }
+            });
+            nearbyContainer.appendChild(span);
+        });
+    }
+
+    // ----- input events -----
+    input.addEventListener('input', (e) => {
+        const val = e.target.value;
+        if (val.length >= 1) {
+            renderSuggestions(val);
+        } else {
+            suggestionsBox.style.display = 'none';
+        }
+    });
+    input.addEventListener('blur', () => {
+        setTimeout(() => { suggestionsBox.style.display = 'none'; }, 200);
+    });
+    input.addEventListener('focus', () => {
+        if (input.value.length >= 1) renderSuggestions(input.value);
+    });
+
+    lookupBtn.addEventListener('click', () => {
+        suggestionsBox.style.display = 'none';
+        lookupStudent(input.value);
+    });
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            suggestionsBox.style.display = 'none';
+            lookupStudent(input.value);
+        }
+        if (e.key === 'Escape') suggestionsBox.style.display = 'none';
+    });
+
+    // ----- init -----
+    async function init() {
+        await loadAllStudents();
+        
+        // Initialize default map with MMUST campus
+        initMap(0.286, 34.752, 'MMUST Campus');
+
+        // if URL has ?reg=...
+        const params = new URLSearchParams(window.location.search);
+        const regParam = params.get('reg');
+        if (regParam) {
+            input.value = regParam;
+            lookupStudent(regParam);
+        }
+    }
+
+    onAuthStateChanged(auth, (user) => {
+        if (!user) {
+            showToast('Not logged in – demo mode', true);
+        }
+        init();
+    });
+
+</script>
+</body>
+</html>
