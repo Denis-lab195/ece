@@ -23,7 +23,6 @@
             padding:0;
         }
         
-        /* Full width on mobile - no card */
         .lookup-window {
             background: #fff;
             border-radius: 0;
@@ -36,7 +35,6 @@
             transition: all 0.2s;
         }
         
-        /* On larger screens, show as card */
         @media (min-width: 768px) {
             body {
                 display: flex;
@@ -113,7 +111,6 @@
             }
         }
 
-        /* Input group - full width touch friendly */
         .input-group-custom {
             border-radius: 60px;
             overflow: hidden;
@@ -166,7 +163,6 @@
         .input-group-custom button:hover { background:#0047b3; }
         .input-group-custom button:disabled { opacity:0.6; }
 
-        /* Suggestions - touch friendly */
         .suggestions-box {
             position: relative;
             margin-top: 6px;
@@ -223,21 +219,24 @@
             font-weight: 600;
         }
 
-        /* Result card - full width on mobile */
         .result-card {
             margin-top: 1rem;
-            background: #fafcff;
-            border-radius: 16px;
-            padding: 1rem;
-            border-left: 4px solid #0066FF;
+            background: transparent;
+            border-radius: 0;
+            padding: 0;
+            border-left: none;
+            border: none;
+            box-shadow: none;
             display: none;
         }
         @media (min-width: 768px) {
             .result-card {
                 margin-top: 1.6rem;
+                background: #fafcff;
                 border-radius: 20px;
                 padding: 1.2rem 1.4rem;
                 border-left: 5px solid #0066FF;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             }
         }
         
@@ -246,14 +245,19 @@
             flex-wrap: wrap;
             gap: 0.2rem 0.5rem;
             font-size: 0.85rem;
-            padding: 4px 0;
+            padding: 6px 0;
+            border-bottom: 1px solid #f1f5f9;
         }
         @media (min-width: 768px) {
             .result-card .row-detail {
                 gap: 0.2rem 0.8rem;
                 font-size: 0.9rem;
                 padding: 3px 0;
+                border-bottom: 1px solid #f3f4f6;
             }
+        }
+        .result-card .row-detail:last-child {
+            border-bottom: none;
         }
         
         .result-card .row-detail .label {
@@ -274,9 +278,18 @@
         .result-card .place {
             font-weight: 600;
             color: #1e3a8a;
-            margin-top: 4px;
+            margin-top: 6px;
             word-wrap: break-word;
             font-size: 0.9rem;
+            padding: 6px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        @media (min-width: 768px) {
+            .result-card .place {
+                margin-top: 4px;
+                padding: 3px 0;
+                border-bottom: none;
+            }
         }
         .result-card .place .updated-by {
             font-weight: 400;
@@ -285,12 +298,20 @@
             margin-left: 6px;
         }
         
-        /* Actions - touch friendly */
         .result-card .actions {
             display: flex;
             gap: 6px;
             flex-wrap: wrap;
             margin-top: 10px;
+            padding-top: 6px;
+            border-top: 1px solid #f1f5f9;
+        }
+        @media (min-width: 768px) {
+            .result-card .actions {
+                margin-top: 10px;
+                padding-top: 0;
+                border-top: none;
+            }
         }
         .result-card .actions .btn-sm-custom {
             padding: 8px 14px;
@@ -331,15 +352,18 @@
         .btn-clear-route:hover { background:#4B5563; color:#fff; }
         .btn-clear-route:active { background:#374151; }
 
-        /* Nearby - touch friendly */
         .nearby-tiny {
             margin-top: 0.8rem;
             font-size: 0.75rem;
+            padding-top: 6px;
+            border-top: 1px solid #f1f5f9;
         }
         @media (min-width: 768px) {
             .nearby-tiny {
                 margin-top: 1rem;
                 font-size: 0.8rem;
+                padding-top: 0;
+                border-top: none;
             }
         }
         
@@ -374,22 +398,28 @@
             margin-left:4px;
         }
 
-        /* Map container - larger on mobile */
         .map-container {
             width: 100%;
-            height: 250px;
-            border-radius: 12px;
+            height: 300px;
+            border-radius: 0;
             overflow: hidden;
             margin-top: 10px;
-            border: 1px solid #e9edf2;
+            border: none;
             background: #eef2f6;
             position: relative;
+            margin-left: -0.8rem;
+            margin-right: -0.8rem;
+            width: calc(100% + 1.6rem);
         }
         @media (min-width: 768px) {
             .map-container {
                 height: 280px;
                 border-radius: 16px;
                 margin-top: 12px;
+                border: 1px solid #e9edf2;
+                margin-left: 0;
+                margin-right: 0;
+                width: 100%;
             }
         }
         
@@ -421,7 +451,6 @@
             display: none;
         }
 
-        /* Route info - mobile friendly */
         .route-info {
             display: none;
             margin-top: 8px;
@@ -436,6 +465,7 @@
                 margin-top: 10px;
                 padding: 10px 14px;
                 font-size: 0.85rem;
+                border-radius: 12px;
             }
         }
         
@@ -454,8 +484,11 @@
         .route-info .route-details .time {
             color: #0066FF;
         }
+        .route-info .route-details .speed {
+            color: #8B5CF6;
+            font-size: 0.7rem;
+        }
 
-        /* Not found */
         .not-found {
             margin-top: 1.2rem;
             text-align: center;
@@ -477,7 +510,6 @@
         }
         @keyframes spin { to { transform:rotate(360deg); } }
 
-        /* Toast - mobile friendly */
         .toast-custom {
             position:fixed;
             bottom:20px;
@@ -507,12 +539,10 @@
         .toast-error { border-left-color:#EF4444; }
         @keyframes slideUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
 
-        /* Scrollbar */
         .suggestions-box::-webkit-scrollbar { width:4px; }
         .suggestions-box::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:10px; }
         .suggestions-box::-webkit-scrollbar-track { background:transparent; }
 
-        /* Designer credit - mobile friendly */
         .designer-credit {
             margin-top: 1.5rem;
             padding-top: 0.8rem;
@@ -540,7 +570,6 @@
             color: #EF4444;
         }
 
-        /* Leaflet routing machine custom styles */
         .leaflet-routing-container {
             max-height: 150px;
             overflow-y: auto;
@@ -550,7 +579,6 @@
             overflow-y: auto;
         }
 
-        /* Touch improvements */
         .leaflet-control-zoom {
             touch-action: manipulation;
         }
@@ -560,7 +588,6 @@
             line-height: 44px;
         }
 
-        /* Fix for mobile viewport */
         .leaflet-control-container .leaflet-control {
             z-index: 500;
         }
@@ -574,18 +601,69 @@
             }
             .suggestions-box .suggestion-item .reg { font-size: 0.75rem; }
             .suggestions-box .suggestion-item .name { font-size: 0.7rem; }
+            .map-container {
+                height: 320px;
+            }
         }
         
-        /* Fix for bottom bar on mobile */
         .lookup-window {
             padding-bottom: env(safe-area-inset-bottom, 1.5rem);
+        }
+
+        .pulsing-dot {
+            width: 20px;
+            height: 20px;
+            background: #0066FF;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 0 rgba(0, 102, 255, 0.7);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        .pulsing-dot::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 50%;
+            border: 2px solid rgba(0, 102, 255, 0.3);
+            animation: pulse-ring 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 102, 255, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(0, 102, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 102, 255, 0); }
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        .pulsing-dot-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-route {
+            display: none;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: #475569;
+            text-align: center;
+        }
+        .loading-route i {
+            margin-right: 8px;
         }
     </style>
 </head>
 <body>
 
 <div class="lookup-window">
-    <!-- brand -->
     <div class="brand">
         <div class="icon"><i class="fas fa-user-graduate"></i></div>
         <div>
@@ -594,7 +672,6 @@
         </div>
     </div>
 
-    <!-- search with dropdown -->
     <div style="position:relative;">
         <div class="input-group input-group-custom">
             <input type="text" id="admissionInput" placeholder="Type admission number …" autocomplete="off" inputmode="text" />
@@ -603,7 +680,6 @@
         <div class="suggestions-box" id="suggestionsBox"></div>
     </div>
 
-    <!-- result card -->
     <div class="result-card" id="resultCard">
         <div class="row-detail"><span class="label">Reg No</span><span class="value" id="sReg">—</span></div>
         <div class="row-detail"><span class="label">Full Name</span><span class="value" id="sName">—</span></div>
@@ -616,7 +692,7 @@
             <button class="btn-sm-custom btn-dir" id="dirBtn"><i class="fas fa-route me-1"></i>Directions</button>
             <button class="btn-sm-custom btn-phone" id="phoneBtn"><i class="fas fa-phone-alt me-1"></i>Call</button>
         </div>
-        <!-- Map -->
+        
         <div class="map-container" id="mapContainer">
             <div class="map-placeholder" id="mapPlaceholder">
                 <i class="fas fa-map-marked-alt"></i>
@@ -624,12 +700,23 @@
             </div>
             <div id="studentMap"></div>
         </div>
-        <!-- Route Info -->
+        
+        <div class="loading-route" id="loadingRoute">
+            <i class="fas fa-spinner fa-spin"></i> Calculating accurate route...
+        </div>
+        
+        <div id="trackingStatus" style="display:none; margin-top:8px; padding:8px 12px; background:#DBEAFE; border-radius:12px; font-size:0.8rem; color:#1e3a8a; border-left:4px solid #0066FF;">
+            <i class="fas fa-satellite-dish me-1"></i> 
+            <span id="trackingText">Tracking live location...</span>
+            <span id="updateCount" style="float:right; font-weight:600;"></span>
+        </div>
+        
         <div class="route-info" id="routeInfo">
             <div class="route-details">
                 <span>📍 Route from your location</span>
                 <span class="distance" id="routeDistance">—</span>
                 <span class="time" id="routeTime">—</span>
+                <span class="speed" id="routeSpeed">—</span>
             </div>
             <div style="margin-top:6px; display:flex; gap:8px; flex-wrap:wrap;">
                 <button class="btn-sm-custom btn-clear-route" id="clearRouteBtn" style="font-size:0.7rem; padding:4px 14px; min-height:32px;">
@@ -637,18 +724,16 @@
                 </button>
             </div>
         </div>
-        <!-- nearby -->
+        
         <div class="nearby-tiny" id="nearbyContainer">
             <span class="text-muted" style="font-size:0.7rem;">Nearby students appear here</span>
         </div>
     </div>
 
-    <!-- not found -->
     <div class="not-found" id="notFound">
         <i class="fas fa-user-slash me-2" style="color:#cbd5e1;"></i> No student matches that number.
     </div>
 
-    <!-- Designer Credit -->
     <div class="designer-credit">
         <span>Designed with <span class="heart">❤</span> by </span>
         <a href="tel:0719736872">Bittok</a>
@@ -657,11 +742,9 @@
     </div>
 </div>
 
-<!-- toast container -->
 <div id="toastContainer"></div>
 
 <script type="module">
-    // ----- Firebase imports -----
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -678,13 +761,12 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // ----- DOM refs -----
+    // DOM refs
     const input = document.getElementById('admissionInput');
     const lookupBtn = document.getElementById('lookupBtn');
     const suggestionsBox = document.getElementById('suggestionsBox');
     const resultCard = document.getElementById('resultCard');
     const notFound = document.getElementById('notFound');
-
     const sReg = document.getElementById('sReg');
     const sName = document.getElementById('sName');
     const sCompany = document.getElementById('sCompany');
@@ -702,6 +784,11 @@
     const routeInfo = document.getElementById('routeInfo');
     const routeDistance = document.getElementById('routeDistance');
     const routeTime = document.getElementById('routeTime');
+    const routeSpeed = document.getElementById('routeSpeed');
+    const trackingStatus = document.getElementById('trackingStatus');
+    const trackingText = document.getElementById('trackingText');
+    const updateCount = document.getElementById('updateCount');
+    const loadingRoute = document.getElementById('loadingRoute');
 
     let allStudents = [];
     let currentStudent = null;
@@ -711,8 +798,65 @@
     let routingControl = null;
     let isShowingRoute = false;
     let userLocation = null;
+    let startMarker = null;
+    let endMarker = null;
+    let userMarker = null;
+    let watchId = null;
+    let updateCounter = 0;
+    let isTracking = false;
+    let destinationLat = null;
+    let destinationLng = null;
+    let routeDistanceKm = 0;
+    let currentSpeed = 0;
+    let lastPosition = null;
+    let lastTime = null;
+    let speedSamples = [];
 
-    // ----- helpers -----
+    // ----- OSRM API for accurate road distance -----
+    async function getOSRMRoute(fromLat, fromLng, toLat, toLng) {
+        const url = `https://router.project-osrm.org/route/v1/driving/${fromLng},${fromLat};${toLng},${toLat}?overview=full&geometries=geojson`;
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            if (data && data.routes && data.routes.length > 0) {
+                const route = data.routes[0];
+                const distanceKm = route.distance / 1000;
+                const durationMinutes = route.duration / 60;
+                return { distance: distanceKm, duration: durationMinutes, geometry: route.geometry };
+            }
+            return null;
+        } catch (error) {
+            console.error('OSRM error:', error);
+            return null;
+        }
+    }
+
+    // ----- Calculate speed from GPS positions -----
+    function calculateSpeed(lat1, lon1, lat2, lon2, timeDiff) {
+        if (timeDiff <= 0) return 0;
+        const distance = haversine(lat1, lon1, lat2, lon2);
+        const speedKmh = (distance / timeDiff) * 3600; // km/h
+        return speedKmh;
+    }
+
+    function haversine(lat1, lon1, lat2, lon2) {
+        const R = 6371;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat/2)**2 + Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) * Math.sin(dLon/2)**2;
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    }
+
+    // ----- Format time display -----
+    function formatTime(minutes) {
+        if (minutes < 1) return '< 1 min';
+        if (minutes < 60) return `${Math.round(minutes)} min`;
+        const hours = Math.floor(minutes / 60);
+        const mins = Math.round(minutes % 60);
+        if (mins === 0) return `${hours} hr`;
+        return `${hours} hr ${mins} min`;
+    }
+
     function showToast(msg, isError=false) {
         const container = document.getElementById('toastContainer');
         const div = document.createElement('div');
@@ -722,17 +866,35 @@
         setTimeout(() => { if(div.parentNode) div.remove(); }, 3500);
     }
 
-    function haversine(lat1, lon1, lat2, lon2) {
-        const R=6371;
-        const dLat=(lat2-lat1)*Math.PI/180;
-        const dLon=(lon2-lon1)*Math.PI/180;
-        const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
-        return R*2*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    // ----- Create custom markers -----
+    function createStartMarker() {
+        return L.divIcon({
+            html: `<div style="background:#EF4444;width:28px;height:28px;border-radius:50%;border:3px solid white;box-shadow:0 2px 12px rgba(239,68,68,0.4);display:flex;align-items:center;justify-content:center;font-size:14px;color:white;">📍</div>`,
+            iconSize: [28, 28],
+            popupAnchor: [0, -14],
+            className: 'start-marker'
+        });
+    }
+
+    function createEndMarker() {
+        return L.divIcon({
+            html: `<div style="background:#10B981;width:28px;height:28px;border-radius:50%;border:3px solid white;box-shadow:0 2px 12px rgba(16,185,129,0.4);display:flex;align-items:center;justify-content:center;font-size:14px;color:white;">🏁</div>`,
+            iconSize: [28, 28],
+            popupAnchor: [0, -14],
+            className: 'end-marker'
+        });
+    }
+
+    function createUserMarker() {
+        return L.divIcon({
+            html: `<div class="pulsing-dot-container"><div class="pulsing-dot"></div></div>`,
+            iconSize: [20, 20],
+            className: 'user-marker'
+        });
     }
 
     // ----- Initialize map -----
     function initMap(lat, lng, studentName) {
-        // Remove old map if exists
         if (mapInstance) {
             if (routingControl) {
                 mapInstance.removeControl(routingControl);
@@ -742,10 +904,15 @@
             mapInstance = null;
             mapMarker = null;
             nearbyMarkers = [];
+            startMarker = null;
+            endMarker = null;
+            userMarker = null;
             isShowingRoute = false;
+            routeInfo.style.display = 'none';
+            trackingStatus.style.display = 'none';
+            loadingRoute.style.display = 'none';
             dirBtn.classList.remove('active');
             dirBtn.innerHTML = '<i class="fas fa-route me-1"></i>Directions';
-            routeInfo.style.display = 'none';
         }
 
         const hasLocation = lat && lng;
@@ -790,10 +957,12 @@
                 opacity: 0.3
             }).addTo(mapInstance);
 
+            destinationLat = lat;
+            destinationLng = lng;
+
             if (isShowingRoute && userLocation) {
                 showRoute(userLocation.lat, userLocation.lng, lat, lng);
             }
-
         } else {
             const campusIcon = L.divIcon({
                 html: `<div style="background:#10B981;width:20px;height:20px;border-radius:50%;border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;font-size:10px;">🏫</div>`,
@@ -802,6 +971,8 @@
             L.marker([0.286, 34.752], { icon: campusIcon })
                 .addTo(mapInstance)
                 .bindPopup('MMUST Main Campus');
+            destinationLat = null;
+            destinationLng = null;
         }
 
         setTimeout(() => {
@@ -809,61 +980,267 @@
         }, 300);
     }
 
-    // ----- Show route on map -----
-    function showRoute(fromLat, fromLng, toLat, toLng) {
+    // ----- Show route with OSRM accurate distance -----
+    async function showRoute(fromLat, fromLng, toLat, toLng) {
         if (!mapInstance) return;
         
+        // Show loading
+        loadingRoute.style.display = 'block';
+        routeInfo.style.display = 'none';
+
+        // Remove existing routing control
         if (routingControl) {
             mapInstance.removeControl(routingControl);
             routingControl = null;
         }
 
-        const waypoints = [
-            L.latLng(fromLat, fromLng),
-            L.latLng(toLat, toLng)
-        ];
+        // Remove existing start/end markers
+        if (startMarker) {
+            mapInstance.removeLayer(startMarker);
+            startMarker = null;
+        }
+        if (endMarker) {
+            mapInstance.removeLayer(endMarker);
+            endMarker = null;
+        }
 
-        routingControl = L.Routing.control({
-            waypoints: waypoints,
-            routeWhileDragging: true,
-            showAlternatives: false,
-            createMarker: function() { return null; },
-            lineOptions: {
-                styles: [{ color: '#0066FF', weight: 4, opacity: 0.8 }]
-            },
-            altLineOptions: {
-                styles: [{ color: '#10B981', weight: 3, opacity: 0.5 }]
-            }
-        }).addTo(mapInstance);
+        // Get accurate route from OSRM
+        const routeData = await getOSRMRoute(fromLat, fromLng, toLat, toLng);
+        
+        loadingRoute.style.display = 'none';
 
-        routingControl.on('routesfound', function(e) {
-            const routes = e.routes;
-            if (routes && routes.length > 0) {
-                const route = routes[0];
-                const distance = route.summary.totalDistance / 1000;
-                const time = route.summary.totalTime / 60;
-                
-                routeDistance.textContent = `📏 ${distance.toFixed(1)} km`;
-                routeTime.textContent = `⏱️ ${Math.round(time)} min`;
-                routeInfo.style.display = 'block';
+        // Add start marker (red - your location)
+        startMarker = L.marker([fromLat, fromLng], { icon: createStartMarker() })
+            .addTo(mapInstance)
+            .bindPopup('📍 Your Location')
+            .openPopup();
+
+        // Add end marker (green - destination)
+        endMarker = L.marker([toLat, toLng], { icon: createEndMarker() })
+            .addTo(mapInstance)
+            .bindPopup('🏁 Destination');
+
+        let distanceKm, durationMinutes;
+
+        if (routeData && routeData.distance) {
+            distanceKm = routeData.distance;
+            durationMinutes = routeData.duration;
+            
+            // Draw the route from OSRM
+            if (routeData.geometry && routeData.geometry.coordinates) {
+                const coords = routeData.geometry.coordinates.map(c => [c[1], c[0]]);
+                const routeLine = L.polyline(coords, {
+                    color: '#0066FF',
+                    weight: 4,
+                    opacity: 0.8
+                }).addTo(mapInstance);
+                // Store for later removal
+                routingControl = {
+                    remove: function() { 
+                        mapInstance.removeLayer(routeLine);
+                    }
+                };
             }
-        });
+        } else {
+            // Fallback to haversine
+            distanceKm = haversine(fromLat, fromLng, toLat, toLng);
+            durationMinutes = distanceKm / 50 * 60; // Assume 50 km/h as fallback
+            
+            // Draw simple line
+            const routeLine = L.polyline([
+                [fromLat, fromLng],
+                [toLat, toLng]
+            ], {
+                color: '#0066FF',
+                weight: 4,
+                opacity: 0.8,
+                dashArray: '5, 10'
+            }).addTo(mapInstance);
+            routingControl = {
+                remove: function() { 
+                    mapInstance.removeLayer(routeLine);
+                }
+            };
+        }
+
+        routeDistanceKm = distanceKm;
+
+        // Update route info with initial estimates
+        const speedKmh = currentSpeed > 0 ? currentSpeed : 50; // Use actual speed if available, else fallback
+        const estimatedTime = distanceKm / speedKmh * 60;
+        
+        routeDistance.textContent = `📏 ${distanceKm.toFixed(1)} km`;
+        routeTime.textContent = `⏱️ ${formatTime(estimatedTime)}`;
+        routeSpeed.textContent = `🚗 ${Math.round(speedKmh)} km/h`;
+        routeInfo.style.display = 'block';
+
+        // Fit bounds to show entire route
+        try {
+            const bounds = L.latLngBounds([
+                [fromLat, fromLng],
+                [toLat, toLng]
+            ]);
+            mapInstance.fitBounds(bounds, { 
+                padding: [60, 60],
+                maxZoom: 13
+            });
+        } catch (error) {
+            console.log('Error fitting bounds:', error);
+        }
 
         isShowingRoute = true;
         dirBtn.classList.add('active');
         dirBtn.innerHTML = '<i class="fas fa-route me-1"></i>Hide Route';
+
+        // Start real-time tracking if not already started
+        if (!isTracking) {
+            startRealTimeTracking();
+        }
+    }
+
+    // ----- Start real-time location tracking -----
+    function startRealTimeTracking() {
+        if (!navigator.geolocation) {
+            showToast('Geolocation not supported.', true);
+            return;
+        }
+
+        isTracking = true;
+        trackingStatus.style.display = 'block';
+        trackingText.textContent = 'Tracking live location...';
+        updateCounter = 0;
+        lastPosition = null;
+        lastTime = null;
+        speedSamples = [];
+
+        watchId = navigator.geolocation.watchPosition(
+            (pos) => {
+                const lat = pos.coords.latitude;
+                const lng = pos.coords.longitude;
+                const currentTime = Date.now();
+                updateCounter++;
+                updateCount.textContent = `🔄 ${updateCounter}`;
+
+                // Calculate speed from movement
+                if (lastPosition && lastTime) {
+                    const timeDiffSec = (currentTime - lastTime) / 1000;
+                    if (timeDiffSec > 1) {
+                        const speed = calculateSpeed(lastPosition.lat, lastPosition.lng, lat, lng, timeDiffSec);
+                        if (speed > 1 && speed < 200) { // Filter out invalid speeds
+                            speedSamples.push(speed);
+                            if (speedSamples.length > 5) speedSamples.shift();
+                            // Average speed
+                            currentSpeed = speedSamples.reduce((a, b) => a + b, 0) / speedSamples.length;
+                        }
+                    }
+                }
+                lastPosition = { lat, lng };
+                lastTime = currentTime;
+
+                userLocation = { lat, lng };
+
+                // Update user marker
+                if (userMarker) {
+                    mapInstance.removeLayer(userMarker);
+                }
+                userMarker = L.marker([lat, lng], { icon: createUserMarker() })
+                    .addTo(mapInstance)
+                    .bindPopup('📍 You are here');
+
+                // Update route if active
+                if (isShowingRoute && destinationLat && destinationLng) {
+                    // Recalculate distance from current position to destination
+                    const remainingDistance = haversine(lat, lng, destinationLat, destinationLng);
+                    
+                    // Calculate time based on current speed
+                    const speedKmh = currentSpeed > 0 ? currentSpeed : 50;
+                    const estimatedTime = remainingDistance / speedKmh * 60;
+                    
+                    routeDistance.textContent = `📏 ${remainingDistance.toFixed(1)} km`;
+                    routeTime.textContent = `⏱️ ${formatTime(estimatedTime)}`;
+                    routeSpeed.textContent = `🚗 ${Math.round(speedKmh)} km/h`;
+                    routeInfo.style.display = 'block';
+
+                    // Update route line
+                    if (routingControl) {
+                        routingControl.remove();
+                        routingControl = null;
+                    }
+
+                    // Draw updated route line
+                    const routeLine = L.polyline([
+                        [lat, lng],
+                        [destinationLat, destinationLng]
+                    ], {
+                        color: '#0066FF',
+                        weight: 4,
+                        opacity: 0.8
+                    }).addTo(mapInstance);
+                    routingControl = {
+                        remove: function() { 
+                            mapInstance.removeLayer(routeLine);
+                        }
+                    };
+                }
+
+                const accuracy = pos.coords.accuracy ? Math.round(pos.coords.accuracy) : '?';
+                trackingText.textContent = `📍 Live tracking · ±${accuracy}m accuracy · ${Math.round(currentSpeed)} km/h`;
+            },
+            (error) => {
+                console.warn('Location error:', error);
+                trackingText.textContent = '⚠️ Location lost. Reconnecting...';
+            },
+            {
+                enableHighAccuracy: true,
+                maximumAge: 3000,
+                timeout: 15000
+            }
+        );
+    }
+
+    // ----- Stop real-time tracking -----
+    function stopRealTimeTracking() {
+        if (watchId) {
+            navigator.geolocation.clearWatch(watchId);
+            watchId = null;
+        }
+        isTracking = false;
+        trackingStatus.style.display = 'none';
+        if (userMarker) {
+            mapInstance.removeLayer(userMarker);
+            userMarker = null;
+        }
+        currentSpeed = 0;
+        speedSamples = [];
+        lastPosition = null;
+        lastTime = null;
     }
 
     // ----- Clear route -----
     function clearRoute() {
         if (routingControl) {
-            mapInstance.removeControl(routingControl);
+            routingControl.remove();
             routingControl = null;
         }
+        if (startMarker) {
+            mapInstance.removeLayer(startMarker);
+            startMarker = null;
+        }
+        if (endMarker) {
+            mapInstance.removeLayer(endMarker);
+            endMarker = null;
+        }
+        stopRealTimeTracking();
+        
         isShowingRoute = false;
         dirBtn.classList.remove('active');
         dirBtn.innerHTML = '<i class="fas fa-route me-1"></i>Directions';
         routeInfo.style.display = 'none';
+        loadingRoute.style.display = 'none';
+
+        if (currentStudent && currentStudent.location) {
+            mapInstance.setView([currentStudent.location.lat, currentStudent.location.lng], 15);
+        }
     }
 
     // ----- Update map with student location -----
@@ -1005,10 +1382,13 @@
                 location: hasLoc ? { lat: loc.lat, lng: loc.lng, address: loc.address || '' } : null
             };
 
+            stopRealTimeTracking();
+            
             isShowingRoute = false;
             dirBtn.classList.remove('active');
             dirBtn.innerHTML = '<i class="fas fa-route me-1"></i>Directions';
             routeInfo.style.display = 'none';
+            loadingRoute.style.display = 'none';
 
             updateMap(currentStudent);
             renderNearbyList(currentStudent);
@@ -1146,7 +1526,6 @@
         }
     }
 
-    // Initialize without showing any toast messages
     onAuthStateChanged(auth, (user) => {
         init();
     });
